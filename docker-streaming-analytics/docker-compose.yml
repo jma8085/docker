@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+   rabbitmq3:
+      image: rabbitmq:3-management-alpine
+      expose:
+         - "5672:5672"
+         - "15672:15672"
+      ports:
+         - "0.0.0.0:5672:5672"
+         - "0.0.0.0:25672:25672"
+         - "0.0.0.0:15671:15671"
+         - "0.0.0.0:15672:15672"
+      environment:
+         - RABBITMQ_DEFAULT_USER=guest
+         - RABBITMQ_DEFAULT_PASS=guest
+      restart: always
+
+   mongodb:
+      image : mongo
+      environment:
+         - PUID=1000
+         - PGID=1000
+      ports:
+         - 27017:27017
+      restart: always
+   
+   analytics:
+      image: analytics:latest
+      build:
+         context: ./
+         dockerfile: Dockerfile
+      environment:
+         - CONNECTIONSTRINGS_CONFIGURATIONSTORECONNECTION=Server=mongodb,27017;database=Opengate
+         - CONNECTIONSTRINGS_CONFIGURATIONSTORECONNECTION=Server=rabbitmq3,15672;Uset Id=guest;Password=guest
+         #- SPRING_DATA_MONGODB_DATABASE=Opengate
+         #- SPRING_DATA_MONGODB_PORT=27017
+         #- SPRING_DATA_MONGODB_HOST=localhost
+      depends_on:
+         - mongodb
+         - rabbitmq3
+      links:
+         - mongodb
+         - rabbitmq3
+      restart: always
