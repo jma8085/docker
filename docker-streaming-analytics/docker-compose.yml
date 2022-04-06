@@ -32,9 +32,6 @@ services:
       environment:
          - CONNECTIONSTRINGS_CONFIGURATIONSTORECONNECTION=Server=mongodb,27017;database=Opengate
          - CONNECTIONSTRINGS_CONFIGURATIONSTORECONNECTION=Server=rabbitmq3,15672;Uset Id=guest;Password=guest
-         #- SPRING_DATA_MONGODB_DATABASE=Opengate
-         #- SPRING_DATA_MONGODB_PORT=27017
-         #- SPRING_DATA_MONGODB_HOST=localhost
       depends_on:
          - mongodb
          - rabbitmq3
